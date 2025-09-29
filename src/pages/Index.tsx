@@ -83,8 +83,8 @@ const Index = () => {
 
   const handleViewProfile = (candidate: Candidate) => {
     toast({
-      title: "Perfil do Candidato",
-      description: `Visualizando perfil completo de ${candidate.name}`,
+      title: "Currículo Completo",
+      description: `Visualizando currículo detalhado de ${candidate.name} com todas as informações e habilidades`,
     });
   };
 
