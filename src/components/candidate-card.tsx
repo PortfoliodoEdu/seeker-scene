@@ -16,11 +16,13 @@ export interface Candidate {
   hasExperience: boolean;
   interestArea: string;
   experienceYears?: number;
-  email: string;
-  phone: string;
-  avatar: string;
-  skills: string[];
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  skills?: string[];
   status: "new" | "interviewing" | "hired";
+  videoUrl?: string;
+  resumeUrl?: string;
 }
 
 interface CandidateCardProps {
