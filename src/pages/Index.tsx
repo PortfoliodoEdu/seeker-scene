@@ -52,7 +52,24 @@ const Index = () => {
         logger.debug("Iniciando carregamento de candidatos");
         
         const response = await fetch("https://integradorwebhook.sanjaworks.com/webhook/produtor-candidatos-site");
-        const data: ApiCandidate[] = await response.json();
+        const data = await response.json();
+        
+        logger.debug("Resposta recebida da API", { 
+          status: response.status,
+          statusText: response.statusText,
+          isArray: Array.isArray(data),
+          responseType: typeof data,
+          responseData: data
+        });
+        
+        // Verificar se a resposta é um array
+        if (!Array.isArray(data)) {
+          logger.error("API não retornou um array de candidatos", { 
+            receivedData: data,
+            expectedFormat: "Array de objetos com candidatos"
+          });
+          throw new Error(`API retornou formato inválido: ${JSON.stringify(data)}`);
+        }
         
         logger.debug("Dados recebidos da API", { totalCandidatos: data.length });
         
