@@ -17,17 +17,27 @@ const sendLog = async (level: LogLevel, message: string, data?: any) => {
     data,
   };
 
+  // Log local primeiro
+  console.log(`[${level.toUpperCase()}] ${message}`, data);
+  
   try {
-    await fetch(LOG_ENDPOINT, {
+    console.log(`Enviando log para: ${LOG_ENDPOINT}`);
+    const response = await fetch(LOG_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(logEntry),
     });
-    console.log(`[${level.toUpperCase()}] ${message}`, data);
+    
+    console.log(`Resposta do webhook: ${response.status} ${response.statusText}`);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Erro do servidor: ${errorText}`);
+    }
   } catch (error) {
-    console.error("Falha ao enviar log:", error);
+    console.error("Falha ao enviar log para webhook:", error);
   }
 };
 
