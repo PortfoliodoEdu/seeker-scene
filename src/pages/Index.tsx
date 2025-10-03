@@ -5,6 +5,7 @@ import { VideoPlayer } from "@/components/video-player";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Users, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { logger } from "@/services/logger";
 
 interface FilterState {
   ageRange: [number, number];
@@ -48,8 +49,12 @@ const Index = () => {
     const fetchCandidates = async () => {
       try {
         setIsLoading(true);
+        logger.debug("Iniciando carregamento de candidatos");
+        
         const response = await fetch("https://integradorwebhook.sanjaworks.com/webhook/produtor-candidatos-site");
         const data: ApiCandidate[] = await response.json();
+        
+        logger.debug("Dados recebidos da API", { totalCandidatos: data.length });
         
         const mappedCandidates: Candidate[] = data.map((item) => ({
           id: item.row_number.toString(),
@@ -67,7 +72,9 @@ const Index = () => {
         }));
         
         setCandidates(mappedCandidates);
+        logger.info("Candidatos carregados com sucesso", { total: mappedCandidates.length });
       } catch (error) {
+        logger.error("Erro ao carregar candidatos", { error: String(error) });
         console.error("Erro ao carregar candidatos:", error);
         toast({
           title: "Erro ao carregar candidatos",
@@ -83,7 +90,9 @@ const Index = () => {
   }, [toast]);
 
   const filteredCandidates = useMemo(() => {
-    return candidates.filter((candidate) => {
+    logger.debug("Aplicando filtros", { filters, searchTerm, totalCandidatos: candidates.length });
+    
+    const filtered = candidates.filter((candidate) => {
       // Age filter
       if (candidate.age < filters.ageRange[0] || candidate.age > filters.ageRange[1]) {
         return false;
@@ -131,9 +140,27 @@ const Index = () => {
 
       return true;
     });
+    
+    logger.debug("Filtros aplicados - resultado", { 
+      candidatosFiltrados: filtered.length,
+      filtrosAtivos: filters,
+      termoBusca: searchTerm 
+    });
+    
+    if (filtered.length === 0) {
+      logger.warn("Nenhum candidato encontrado com os filtros selecionados", {
+        filters,
+        searchTerm,
+        totalCandidatosDisponiveis: candidates.length,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    return filtered;
   }, [filters, searchTerm, candidates]);
 
   const handleViewProfile = (candidate: Candidate) => {
+    logger.info("Visualizando perfil de candidato", { candidatoId: candidate.id, candidatoNome: candidate.name });
     toast({
       title: "Currículo Completo",
       description: `Visualizando currículo detalhado de ${candidate.name} com todas as informações e habilidades`,
@@ -141,6 +168,7 @@ const Index = () => {
   };
 
   const handleScheduleInterview = (candidate: Candidate) => {
+    logger.info("Agendando entrevista com candidato", { candidatoId: candidate.id, candidatoNome: candidate.name });
     toast({
       title: "Entrevista Agendada",
       description: `Entrevista com ${candidate.name} foi agendada com sucesso!`,
