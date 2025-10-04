@@ -102,6 +102,7 @@ export function CandidateFilters({ onFiltersChange }: CandidateFiltersProps) {
             <SelectContent>
               <SelectItem value="masculino">Masculino</SelectItem>
               <SelectItem value="feminino">Feminino</SelectItem>
+              <SelectItem value="nao-binario">Não-binário</SelectItem>
               <SelectItem value="prefere-nao-informar">Prefere não informar</SelectItem>
             </SelectContent>
           </Select>

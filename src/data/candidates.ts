@@ -16,7 +16,7 @@ export const mockCandidates: Candidate[] = [
     phone: "(11) 99999-1234",
     avatar: "",
     skills: ["React", "JavaScript", "TypeScript", "Node.js"],
-    status: "new"
+    status: "available"
   },
   {
     id: "2",
@@ -49,7 +49,7 @@ export const mockCandidates: Candidate[] = [
     phone: "(31) 99999-9012",
     avatar: "",
     skills: ["Figma", "Adobe Creative", "UI/UX", "Prototipagem"],
-    status: "new"
+    status: "available"
   },
   {
     id: "4",
@@ -83,7 +83,7 @@ export const mockCandidates: Candidate[] = [
     phone: "(61) 99999-7890",
     avatar: "",
     skills: ["Recrutamento", "Seleção", "Gestão de Pessoas", "HRIS"],
-    status: "new"
+    status: "available"
   },
   {
     id: "6",
@@ -100,7 +100,7 @@ export const mockCandidates: Candidate[] = [
     phone: "(71) 99999-2468",
     avatar: "",
     skills: ["Vendas B2B", "CRM", "Negociação", "Gestão de Equipe"],
-    status: "new"
+    status: "available"
   },
   {
     id: "7",
@@ -134,6 +134,6 @@ export const mockCandidates: Candidate[] = [
     phone: "(41) 99999-9753",
     avatar: "",
     skills: ["Logística", "Supply Chain", "Lean Six Sigma", "KPIs"],
-    status: "new"
+    status: "available"
   }
 ];

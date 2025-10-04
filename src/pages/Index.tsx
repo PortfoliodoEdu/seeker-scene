@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { CandidateFilters } from "@/components/candidate-filters";
 import { CandidateCard, Candidate } from "@/components/candidate-card";
 import { VideoPlayer } from "@/components/video-player";
+import { mockCandidates } from "@/data/candidates";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Users, Loader2 } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface FilterState {
@@ -14,19 +15,6 @@ interface FilterState {
   location: string;
   hasExperience: boolean;
   interestArea: string;
-}
-
-interface ApiCandidate {
-  row_number: number;
-  "Nome Completo": string;
-  "Idade": number;
-  "Gênero": string;
-  "Tem filhos": string;
-  "Endereço": string;
-  "Experiência na área": string;
-  "Área de Interesse": string;
-  "Link Currículo": string;
-  "Link Vídeo": string;
 }
 
 const Index = () => {
@@ -40,50 +28,10 @@ const Index = () => {
     interestArea: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchCandidates = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("https://integradorwebhook.sanjaworks.com/webhook/produtor-candidatos-site");
-        const data: ApiCandidate[] = await response.json();
-        
-        const mappedCandidates: Candidate[] = data.map((item) => ({
-          id: item.row_number.toString(),
-          name: item["Nome Completo"],
-          age: item["Idade"],
-          gender: item["Gênero"].toLowerCase() === "masculino" ? "male" : "female",
-          location: item["Endereço"],
-          status: "new" as const,
-          hasChildren: item["Tem filhos"].toLowerCase() === "sim",
-          childrenCount: 0,
-          hasExperience: item["Experiência na área"].toLowerCase() === "sim",
-          interestArea: item["Área de Interesse"],
-          videoUrl: item["Link Vídeo"],
-          resumeUrl: item["Link Currículo"],
-        }));
-        
-        setCandidates(mappedCandidates);
-      } catch (error) {
-        console.error("Erro ao carregar candidatos:", error);
-        toast({
-          title: "Erro ao carregar candidatos",
-          description: "Não foi possível carregar os dados. Tente novamente.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCandidates();
-  }, [toast]);
-
   const filteredCandidates = useMemo(() => {
-    return candidates.filter((candidate) => {
+    return mockCandidates.filter((candidate) => {
       // Age filter
       if (candidate.age < filters.ageRange[0] || candidate.age > filters.ageRange[1]) {
         return false;
@@ -131,12 +79,12 @@ const Index = () => {
 
       return true;
     });
-  }, [filters, searchTerm, candidates]);
+  }, [filters, searchTerm]);
 
   const handleViewProfile = (candidate: Candidate) => {
     toast({
-      title: "Currículo Completo",
-      description: `Visualizando currículo detalhado de ${candidate.name} com todas as informações e habilidades`,
+      title: "Perfil do Candidato",
+      description: `Visualizando perfil completo de ${candidate.name}`,
     });
   };
 
@@ -197,14 +145,7 @@ const Index = () => {
 
               {/* Candidates Grid */}
               <div className="space-y-6">
-                {isLoading ? (
-                  <div className="text-center py-12">
-                    <Loader2 className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
-                    <p className="text-muted-foreground">
-                      Carregando candidatos...
-                    </p>
-                  </div>
-                ) : filteredCandidates.length > 0 ? (
+                {filteredCandidates.length > 0 ? (
                   filteredCandidates.map((candidate) => (
                     <CandidateCard
                       key={candidate.id}

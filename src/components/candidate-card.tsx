@@ -16,13 +16,11 @@ export interface Candidate {
   hasExperience: boolean;
   interestArea: string;
   experienceYears?: number;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  skills?: string[];
-  status: "new" | "interviewing" | "hired";
-  videoUrl?: string;
-  resumeUrl?: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  skills: string[];
+  status: "available" | "interviewing" | "hired";
 }
 
 interface CandidateCardProps {
@@ -39,10 +37,12 @@ export function CandidateCard({ candidate, onViewProfile, onScheduleInterview }:
   };
   const getStatusColor = (status: string) => {
     switch (status) {
+      case "available":
+        return "bg-green-100 text-green-800 border-green-200";
       case "interviewing":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "hired":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -50,12 +50,14 @@ export function CandidateCard({ candidate, onViewProfile, onScheduleInterview }:
 
   const getStatusText = (status: string) => {
     switch (status) {
+      case "available":
+        return "Disponível";
       case "interviewing":
         return "Em entrevista";
       case "hired":
         return "Contratado";
       default:
-        return "Novo";
+        return "Indefinido";
     }
   };
 
@@ -89,21 +91,36 @@ export function CandidateCard({ candidate, onViewProfile, onScheduleInterview }:
                     <span>{candidate.location}</span>
                   </div>
                   
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Briefcase className="h-4 w-4" />
-                    <span>{candidate.interestArea}</span>
-                    {candidate.hasExperience && (
-                      <span className="text-primary">• Com experiência</span>
-                    )}
-                  </div>
-                  
                   {candidate.hasChildren && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Heart className="h-4 w-4" />
-                      <span>Tem {candidate.childrenCount} filho{candidate.childrenCount > 1 ? 's' : ''}</span>
+                      <span>{candidate.childrenCount} filho{candidate.childrenCount > 1 ? 's' : ''}</span>
                     </div>
                   )}
+                  
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Briefcase className="h-4 w-4" />
+                    <span>{candidate.interestArea}</span>
+                    {candidate.hasExperience && candidate.experienceYears && (
+                      <span className="text-primary">• {candidate.experienceYears} anos de exp.</span>
+                    )}
+                  </div>
                 </div>
+
+                {candidate.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {candidate.skills.slice(0, 3).map((skill, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                    {candidate.skills.length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{candidate.skills.length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex gap-2">
                   <Button
@@ -113,7 +130,7 @@ export function CandidateCard({ candidate, onViewProfile, onScheduleInterview }:
                     className="flex-1"
                   >
                     <Users className="h-4 w-4 mr-1" />
-                    Ver Currículo
+                    Ver Perfil
                   </Button>
                   <Button
                     size="sm"
@@ -121,7 +138,7 @@ export function CandidateCard({ candidate, onViewProfile, onScheduleInterview }:
                     className="flex-1 bg-gradient-primary hover:opacity-90"
                   >
                     <Play className="h-4 w-4 mr-1" />
-                    Agendar
+                    Entrevista
                   </Button>
                 </div>
               </div>
