@@ -113,14 +113,14 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-6">
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid lg:grid-cols-12 gap-6">
           {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-3">
             <CandidateFilters onFiltersChange={setFilters} />
           </div>
 
-          {/* Candidates List - Now takes more space */}
-          <div className="lg:col-span-3">
+          {/* Candidates List */}
+          <div className="lg:col-span-6">
             <div className="space-y-4">
               {/* Search Bar */}
               <div className="relative">
@@ -136,15 +136,15 @@ const Index = () => {
               {/* Results Header */}
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-foreground">
-                  Candidatos com Vídeos
+                  Candidatos Encontrados
                 </h2>
                 <span className="text-sm text-muted-foreground">
-                  {filteredCandidates.length} candidato{filteredCandidates.length !== 1 ? 's' : ''} • Cada um com vídeo integrado
+                  {filteredCandidates.length} candidato{filteredCandidates.length !== 1 ? 's' : ''}
                 </span>
               </div>
 
               {/* Candidates Grid */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {filteredCandidates.length > 0 ? (
                   filteredCandidates.map((candidate) => (
                     <CandidateCard
@@ -164,6 +164,14 @@ const Index = () => {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Video Player */}
+          <div className="lg:col-span-3">
+            <VideoPlayer 
+              candidateName="Ana Silva - Entrevista Técnica"
+              interviewDate="29 de Setembro, 2025 - 14:30"
+            />
           </div>
         </div>
       </div>
